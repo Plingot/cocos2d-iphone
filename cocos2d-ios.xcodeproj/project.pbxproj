@@ -6,6 +6,23 @@
 	objectVersion = 45;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		35372F86132D580F00F56936 /* cocos2d-iOS */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 35372F89132D580F00F56936 /* Build configuration list for PBXAggregateTarget "cocos2d-iOS" */;
+			buildPhases = (
+				35372F8B132D585200F56936 /* Build static lib */,
+				35372F8C132D589D00F56936 /* Build universal lib */,
+				35372F8D132D5A4D00F56936 /* Copy Headers */,
+				35372F8F132D5B7A00F56936 /* Copy Resources */,
+			);
+			dependencies = (
+			);
+			name = "cocos2d-iOS";
+			productName = "cocos2d-iOS";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		0529445D11098D6F00E500F3 /* CCProfiling.h in Headers */ = {isa = PBXBuildFile; fileRef = 0529445911098D6F00E500F3 /* CCProfiling.h */; };
 		0529445E11098D6F00E500F3 /* CCProfiling.m in Sources */ = {isa = PBXBuildFile; fileRef = 0529445A11098D6F00E500F3 /* CCProfiling.m */; };
@@ -3324,6 +3341,19 @@
 			remoteInfo = Bug624;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		35372F8F132D5B7A00F56936 /* Copy Resources */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal/${PRODUCT_NAME}.framework/Resources";
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			name = "Copy Resources";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0529445911098D6F00E500F3 /* CCProfiling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCProfiling.h; sourceTree = "<group>"; };
@@ -8552,6 +8582,7 @@
 				50B2C4D00E100AEA00AE9530 /* Chipmunk */,
 				5018F24C0DFDEAC400C013A5 /* cocos2d */,
 				502C65ED0DFEF3DD00E4107D /* cocos2d-documentation */,
+				35372F86132D580F00F56936 /* cocos2d-iOS */,
 				50CB2FC91004C8B100B7A750 /* CocosDenshion */,
 				509B3A0C0F31024E00F2FB95 /* cocosLive */,
 				505461DE10616AE100AB7C52 /* FontLabel */,
@@ -10500,6 +10531,48 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		35372F8B132D585200F56936 /* Build static lib */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Build static lib";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "xcodebuild -workspace ${PROJECT_NAME}.xcworkspace -scheme cocos2d -sdk iphonesimulator -configuration ${CONFIGURATION} build\nxcodebuild -workspace ${PROJECT_NAME}.xcworkspace -scheme cocos2d -sdk iphoneos -configuration ${CONFIGURATION} build";
+		};
+		35372F8C132D589D00F56936 /* Build universal lib */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Build universal lib";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Paths\nSIMULATOR_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/libcocos2d.a\"\nDEVICE_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphoneos/libcocos2d.a\"\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\"\nUNIVERSAL_LIBRARY_PATH=\"${UNIVERSAL_LIBRARY_DIR}/${PRODUCT_NAME}\"\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${PRODUCT_NAME}.framework\"\n\n# Create framework directory structure.\nrm -rf \"${FRAMEWORK}\" &>/dev/null\nmkdir -p \"${UNIVERSAL_LIBRARY_DIR}\"\nmkdir -p \"${FRAMEWORK}/Versions/A/Headers\"\nmkdir -p \"${FRAMEWORK}/Versions/A/Resources\"\n\n# Generate universal binary from desktop, device, and simulator builds.\nlipo \"${SIMULATOR_LIBRARY_PATH}\" \"${DEVICE_LIBRARY_PATH}\" -create -output \"${UNIVERSAL_LIBRARY_PATH}\"\n\n# Move files to appropriate locations in framework paths.\ncp \"${UNIVERSAL_LIBRARY_PATH}\" \"${FRAMEWORK}/Versions/A\"\ncd \"${FRAMEWORK}\"\nln -sf \"A\" \"Versions/Current\"\nln -sf \"Versions/Current/Headers\" \"Headers\"\nln -sf \"Versions/Current/Resources\" \"Resources\"\nln -sf \"Versions/Current/${PRODUCT_NAME}\" \"${PRODUCT_NAME}\"";
+		};
+		35372F8D132D5A4D00F56936 /* Copy Headers */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Headers";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Paths\nPROJECT_HEADER_DIR=\"${PROJECT_DIR}/cocos2d\"\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\"\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${PRODUCT_NAME}.framework\"\nHEADERS_DIR=\"${FRAMEWORK}/Headers\"\n\nrsync -azp --include=\"*/\" --include=\"*.h\" --exclude=\"*\" \"${PROJECT_HEADER_DIR}/\" \"${HEADERS_DIR}/\"\n\n# Fix - ccCArray.h needed on multiple places\ncd \"${HEADERS_DIR}\"\nln -sf Support/ccCArray.h ccCArray.h\n\n<< ENDCOMMENT > /dev/null\ncd \"${HEADERS_DIR}\"\nfor DIR in `find . -maxdepth 1 -type d | grep -v \"^.$\" | cut -c3-`\ndo\n    mv $DIR/* .\n    rmdir $DIR\ndone\nENDCOMMENT";
+		};
 		502C65F30DFEF44900E4107D /* Run Script: doxygen */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -12018,6 +12091,20 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = ActionsWithBlocksSample;
 				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		35372F87132D580F00F56936 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		35372F88132D580F00F56936 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -14886,6 +14973,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		35372F89132D580F00F56936 /* Build configuration list for PBXAggregateTarget "cocos2d-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				35372F87132D580F00F56936 /* Debug */,
+				35372F88132D580F00F56936 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		495E73FC104B74E40012BB52 /* Build configuration list for PBXNativeTarget "RenderTextureTest" */ = {
 			isa = XCConfigurationList;
