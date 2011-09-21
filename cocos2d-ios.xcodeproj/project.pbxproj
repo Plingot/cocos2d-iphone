@@ -11949,7 +11949,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Paths\nPROJECT_HEADER_DIR=\"${PROJECT_DIR}/cocos2d\"\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\"\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${PRODUCT_NAME}.framework\"\nHEADERS_DIR=\"${FRAMEWORK}/Headers\"\n\nrsync -azp --include=\"*/\" --include=\"*.h\" --exclude=\"*\" \"${PROJECT_HEADER_DIR}/\" \"${HEADERS_DIR}/\"\n\n# Fix - ccCArray.h needed on multiple places\ncd \"${HEADERS_DIR}\"\nln -sf Support/ccCArray.h ccCArray.h\n\n<< ENDCOMMENT > /dev/null\ncd \"${HEADERS_DIR}\"\nfor DIR in `find . -maxdepth 1 -type d | grep -v \"^.$\" | cut -c3-`\ndo\n    mv $DIR/* .\n    rmdir $DIR\ndone\nENDCOMMENT";
+			shellScript = "# Paths\nPROJECT_HEADER_DIR=\"${PROJECT_DIR}/cocos2d\"\nKAZMATH_HEADER_DIR=\"${PROJECT_DIR}/external/kazmath/include/kazmath\"\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\"\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${PRODUCT_NAME}.framework\"\nHEADERS_DIR=\"${FRAMEWORK}/Headers\"\n\nrsync -azp --include=\"*/\" --include=\"*.h\" --exclude=\"*\" \"${PROJECT_HEADER_DIR}/\" \"${HEADERS_DIR}/\"\nrsync -azp --include=\"*/\" --include=\"*.h\" --exclude=\"*\" \"${KAZMATH_HEADER_DIR}/\" \"${HEADERS_DIR}/kazmath/\"\n\n# Fix - ccCArray.h needed on multiple places\ncd \"${HEADERS_DIR}\"\nln -sf Support/ccCArray.h ccCArray.h\nln -sf ../../kazmath Platforms/iOS/kazmath\n\n<< ENDCOMMENT > /dev/null\ncd \"${HEADERS_DIR}\"\nfor DIR in `find . -maxdepth 1 -type d | grep -v \"^.$\" | cut -c3-`\ndo\n    mv $DIR/* .\n    rmdir $DIR\ndone\nENDCOMMENT";
 		};
 		502C65F30DFEF44900E4107D /* Run Script: doxygen */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -15292,6 +15292,7 @@
 				35372F88132D580F00F56936 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		495E73FC104B74E40012BB52 /* Build configuration list for PBXNativeTarget "RenderTextureTest" */ = {
 			isa = XCConfigurationList;
